@@ -15,12 +15,8 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    state = []
-    columns = []
-    for j in range(ncolumns):
-        columns.append(EMPTY)
-    for i in range(nrows):
-        state.extend([columns])
+    columns = [EMPTY for x in range(ncolumns)]
+    state = [list(columns) for x in range(nrows)]
     return state
 
 def player(board):
