@@ -114,6 +114,7 @@ def terminal(board):
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
+    Maybe use preliminaryutility more 4 in a row means 4 for winner X of -4 for winner O
     """
     dezewinnaar=winner(board)
     if dezewinnaar==X:
