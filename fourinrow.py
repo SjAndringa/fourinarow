@@ -10,6 +10,7 @@ EMPTY = None
 nrows = 6
 ncolumns = 7
 nr = 4
+dl = 4
 
 def initial_state():
     """
@@ -124,8 +125,37 @@ def utility(board):
     else:
         return 0
 
+def preliminaryutility(board,maxaantal):
+    '''
+    returns a preliminary utility if no winner yet
+    3 or 2 for X, -3 or -3 for O
+    called from minimax when depth is reached
+    '''
+    for aantal in range(1,maxaantal):
+        #rows
+        for i in range(nrows):
+            for j in range(ncolumns - nr):
+                if board[i][j] in [X,O] and alln(board,i,j,True,aantal):
+                    return (board[i][j],aantal) if board[i][j]==X else (board[i][j],-aantal)
+        # rows
+        for j in range(ncolumns):
+            for i in range(nrows - nr):
+                if board[i][j] in [X, O] and alln(board, i, j, False, aantal):
+                    return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
+        # diagonals to the right
+        for i in range(nrows - nr):
+            for j in range(ncolumns - nr):
+                if board[i][j] in [X,O] and alld(board, i, j, True, aantal):
+                    return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
+        # diagonals to the left
+        for i in range(nrows - nr):
+            for j in range(ncolumns - nr):
+                if if board[i][j] in [X,O] and alld(board, i, j, False, aantal):
+                    return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
+        # when no return occurred, no nr in a row
+        return 0
 
-def minimax(board):
+def minimax(board,limit):
     """
     Returns the optimal action for the current player on the board.
     """
@@ -133,22 +163,24 @@ def minimax(board):
     if terminal(board):
         return
     if player(board)==X:
-        w=max_value(board,-math.inf,math.inf)
+        w=max_value(board,-math.inf,math.inf,limit)
     else:
-        w=min_value(board,-math.inf,math.inf)
+        w=min_value(board,-math.inf,math.inf,limit)
     return w[0]
         
-def max_value(board,alpha,beta):
+def max_value(board,alpha,beta,limit):
     #returns [move,value] that maximizes score
     #v=-math.inf
     w=[None,alpha]
     # w[0] is move w[1] is value of utility
+    if limit < 0:
+        return w
     if terminal(board):
         #print("max_value returns ",utility(board))
-        
+        # de regel hieronder kan niet goed zijn
         return [w,utility(board)]
     for action in actions(board):
-        temp=min_value(result(board,action),alpha,beta)
+        temp=min_value(result(board,action),alpha,beta,limit-1)
         
         if temp[1]>alpha:
             alpha=temp[1]
@@ -159,15 +191,18 @@ def max_value(board,alpha,beta):
         # je moet ook nog de action erbij geven
     return w
 
-def min_value(board,alpha,beta):
+def min_value(board,alpha,beta,limit):
     #v=100
     w=[None,beta]
     # w[0] is move w[1] is value of utility
+    if limit < 0:
+        return [w,preliminaryutility(board,nr-1)]
     if terminal(board):
         #print("min_value returns ",utility(board))
         return [w,utility(board)]
+
     for action in actions(board):
-        temp=max_value(result(board,action),alpha,beta)
+        temp=max_value(result(board,action),alpha,beta,limit-1)
         if temp[1]<beta:
             beta=temp[1]
             w=[action,temp[1]]
@@ -184,26 +219,26 @@ def deepcopy(board):
 def allthree(a,b,c):
     return (a==b and b==c and a in [X,O])
 
-def alln(board,i,j,rows):
+def alln(board,i,j,rows, aantal):
     if rows:
-        for k in range(nr):
+        for k in range(aantal):
             if not board[i][j+k] == board[i][j+k+1]:
                 return False
         return True
     else:
-        for k in range(nr):
+        for k in range(aantal):
             if not board[i+k][j] == board[i+k+1][j]:
                 return False
         return True
 
-def alld(board,i,j,upright):
+def alld(board,i,j,upright,aantal):
     if upright:
-        for k in range(nr):
+        for k in range(aantal):
             if not board[i+k][j+k] == board[i+k+1][j+k+1]:
                 return False
         return True
     else:
-        for k in range(nr):
+        for k in range(aantal):
             if not board[i+k][j-k] == board[i+k+1][j-k-1]:
                 return False
         return True
