@@ -1,0 +1,6 @@
+Het programma draait nu goed met de volgende kanttekeningen:
+aanroep van alln() resulteert niet in winnaar/verliezer
+aanroep van alln() lijkt aantal niet nodig te hebben, met nr =4 gaat het al snel
+dan zou preliminaryutility met aantal < 4 niet nodig hoeven zijn
+kijk of die wel wordt gebruikt
+winner wordt dus niet bepaald en utility geeft daardoor geen waarde terug
