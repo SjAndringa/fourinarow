@@ -77,22 +77,22 @@ def winner(board):
     #rows
     for i in range(nrows):
         for j in range(ncolumns - nr):
-            if alln(board,i,j,True):
+            if alln(board,i,j,True,nr):
                 return board[i][j]
     #columns
     for j in range(ncolumns):
         for i in range(nrows - nr):
-            if alln(board,i,j,False):
+            if alln(board,i,j,False,nr):
                 return board[i][j]
     #diagonals to the right
     for i in range(nrows-nr):
         for j in range(ncolumns - nr):
-            if alld(board,i,j,True):
+            if alld(board,i,j,True,nr):
                 return board[i][j]
     #diagonals to the left
     for i in range(nrows-nr):
         for j in range(ncolumns - nr):
-            if alld(board,i,j,False):
+            if alld(board,i,j,False,nr):
                 return board[i][j]
     #when no return occurred, no nr in a row
     return False
