@@ -150,7 +150,7 @@ def preliminaryutility(board,maxaantal):
         # diagonals to the left
         for i in range(nrows - nr):
             for j in range(ncolumns - nr):
-                if if board[i][j] in [X,O] and alld(board, i, j, False, aantal):
+                if board[i][j] in [X,O] and alld(board, i, j, False, aantal):
                     return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
         # when no return occurred, no nr in a row
         return 0
