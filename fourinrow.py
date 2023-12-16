@@ -66,36 +66,7 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    """
-    if player(board)==X:
-        w=O
-    else:
-        w=X
-    print("kijken of deze speler winnaar is ",w)
-    """
-    
-    #rows
-    for i in range(nrows):
-        for j in range(ncolumns - nr):
-            if alln(board,i,j,True,nr):
-                return board[i][j]
-    #columns
-    for j in range(ncolumns):
-        for i in range(nrows - nr):
-            if alln(board,i,j,False,nr):
-                return board[i][j]
-    #diagonals to the right
-    for i in range(nrows-nr):
-        for j in range(ncolumns - nr):
-            if alld(board,i,j,True,nr):
-                return board[i][j]
-    #diagonals to the left
-    for i in range(nrows-nr):
-        for j in range(ncolumns - nr):
-            if alld(board,i,j,False,nr):
-                return board[i][j]
-    #when no return occurred, no nr in a row
-    return False
+    return alln(board,nr)
 
 
 def terminal(board):
@@ -125,7 +96,7 @@ def utility(board):
     else:
         return 0
 
-def preliminaryutility(board,maxaantal):
+"""def preliminaryutility(board,maxaantal):
     '''
     returns a preliminary utility if no winner yet
     3 or 2 for X, -3 or -3 for O
@@ -143,17 +114,16 @@ def preliminaryutility(board,maxaantal):
                 if board[i][j] in [X, O] and alln(board, i, j, False, aantal):
                     return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
         # diagonals to the right
-        for i in range(nrows - nr):
-            for j in range(ncolumns - nr):
+
                 if board[i][j] in [X,O] and alld(board, i, j, True, aantal):
                     return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
         # diagonals to the left
-        for i in range(nrows - nr):
-            for j in range(ncolumns - nr):
+
                 if board[i][j] in [X,O] and alld(board, i, j, False, aantal):
                     return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
         # when no return occurred, no nr in a row
         return 0
+"""
 
 def minimax(board,limit):
     """
@@ -196,7 +166,7 @@ def min_value(board,alpha,beta,limit):
     w=[None,beta]
     # w[0] is move w[1] is value of utility
     if limit < 0:
-        return [w,preliminaryutility(board,nr-1)]
+        return w
     if terminal(board):
         #print("min_value returns ",utility(board))
         return [w,utility(board)]
@@ -219,29 +189,47 @@ def deepcopy(board):
 def allthree(a,b,c):
     return (a==b and b==c and a in [X,O])
 
-def alln(board,i,j,rows, aantal):
-    if rows:
-        for k in range(aantal):
-            if not board[i][j+k] == board[i][j+k+1]:
-                return False
-        return True
-    else:
-        for k in range(aantal):
-            if not board[i+k][j] == board[i+k+1][j]:
-                return False
-        return True
+def alln(board,aantal):
 
-def alld(board,i,j,upright,aantal):
-    if upright:
-        for k in range(aantal):
-            if not board[i+k][j+k] == board[i+k+1][j+k+1]:
-                return False
-        return True
-    else:
-        for k in range(aantal):
-            if not board[i+k][j-k] == board[i+k+1][j-k-1]:
-                return False
-        return True
+    # rows:
+    for i in range(nrows):
+        for j in range(ncolumns - nr):
+            gevonden = board[i][j] in [X,O]
+            for k in range(aantal):
+                gevonden = gevonden and board[i][j+k] == board[i][j+k+1]
+    if gevonden:
+        return board[i][j]
+
+    #columns
+    for j in range(ncolumns):
+        for i in range(nrows - nr):
+            gevonden = board[i][j] in [X,O]
+            for k in range(aantal):
+                gevonden = gevonden and board[i+k][j] == board[i+k+1][j]
+    if gevonden:
+        return board[i][j]
+    
+    #diagonals upright:
+    for i in range(nrows - nr):
+        for j in range(ncolumns - nr): 
+            gevonden = board[i][j] in [X,O]   
+            for k in range(aantal):
+                gevonden = gevonden and board[i+k][j+k] == board[i+k+1][j+k+1]
+    if gevonden:
+        return board[i][j]
+    
+    #diagonals upleft
+    for i in range(nrows - nr):
+        for j in range(ncolumns - nr):
+            gevonden = board[i][j] in [X,O] 
+            for k in range(aantal):
+                gevonden = gevonden and board[i+k][j-k] == board[i+k+1][j-k-1]
+    if gevonden:
+        return board[i][j]
+
+    # if nothing found yet, no aantal in a row
+    return False
+            
 
 def bordvol(board):
     for i in range(nrows):
