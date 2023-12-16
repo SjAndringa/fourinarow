@@ -195,8 +195,9 @@ def alln(board,aantal):
     for i in range(nrows):
         for j in range(ncolumns - nr):
             gevonden = board[i][j] in [X,O]
-            for k in range(aantal):
-                gevonden = gevonden and board[i][j+k] == board[i][j+k+1]
+            if gevonden:
+                for k in range(aantal):
+                    gevonden = gevonden and board[i][j+k] == board[i][j+k+1]
     if gevonden:
         return board[i][j]
 
@@ -204,8 +205,9 @@ def alln(board,aantal):
     for j in range(ncolumns):
         for i in range(nrows - nr):
             gevonden = board[i][j] in [X,O]
-            for k in range(aantal):
-                gevonden = gevonden and board[i+k][j] == board[i+k+1][j]
+            if gevonden:
+                for k in range(aantal):
+                    gevonden = gevonden and board[i+k][j] == board[i+k+1][j]
     if gevonden:
         return board[i][j]
     
@@ -213,8 +215,9 @@ def alln(board,aantal):
     for i in range(nrows - nr):
         for j in range(ncolumns - nr): 
             gevonden = board[i][j] in [X,O]   
-            for k in range(aantal):
-                gevonden = gevonden and board[i+k][j+k] == board[i+k+1][j+k+1]
+            if gevonden:
+                for k in range(aantal):
+                    gevonden = gevonden and board[i+k][j+k] == board[i+k+1][j+k+1]
     if gevonden:
         return board[i][j]
     
@@ -222,8 +225,9 @@ def alln(board,aantal):
     for i in range(nrows - nr):
         for j in range(ncolumns - nr):
             gevonden = board[i][j] in [X,O] 
-            for k in range(aantal):
-                gevonden = gevonden and board[i+k][j-k] == board[i+k+1][j-k-1]
+            if gevonden:
+                for k in range(aantal):
+                    gevonden = gevonden and board[i+k][j-k] == board[i+k+1][j-k-1]
     if gevonden:
         return board[i][j]
 
