@@ -66,9 +66,10 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, O, None, None], [None, O, X, O, O, None, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
+    dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
     #assert alln(dummyboard,nr) == X
-    return alln(dummyboard,nr)
+    #return alln(dummyboard,nr)
+    return alln(board,nr)
 
 
 def terminal(board):
