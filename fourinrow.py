@@ -10,7 +10,7 @@ EMPTY = None
 nrows = 6
 ncolumns = 7
 nr = 4
-dl = 8
+dl = 12
 
 def initial_state():
     """
@@ -146,11 +146,9 @@ def max_value(board,alpha,beta,limit):
     #v=-math.inf
     w=[None,alpha]
     # w[0] is move w[1] is value of utility
-    if limit < 0:
-        return w
-    if terminal(board):
+
+    if terminal(board) or limit < 0:
         #print("max_value returns ",utility(board))
-        # de regel hieronder kan niet goed zijn
         return [w,utility(board)]
     for action in actions(board):
         temp=min_value(result(board,action),alpha,beta,limit-1)
@@ -168,9 +166,8 @@ def min_value(board,alpha,beta,limit):
     #v=100
     w=[None,beta]
     # w[0] is move w[1] is value of utility
-    if limit < 0:
-        return w
-    if terminal(board):
+
+    if terminal(board) or limit < 0:
         #print("min_value returns ",utility(board))
         return [w,utility(board)]
 
