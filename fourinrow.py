@@ -10,7 +10,7 @@ EMPTY = None
 nrows = 6
 ncolumns = 7
 nr = 4
-dl = 12
+dl = 24
 
 def initial_state():
     """
