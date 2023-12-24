@@ -147,6 +147,8 @@ def max_value(board,alpha,beta,limit):
     w=[None,alpha]
     # w[0] is move w[1] is value of utility
 
+    # utilvalue via countn opvragen
+    # if abs(value) == nr dan terminal, or limit <0
     if terminal(board) or limit < 0:
         #print("max_value returns ",utility(board))
         return [w,utility(board)]
