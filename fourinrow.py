@@ -89,44 +89,87 @@ def terminal(board):
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
-    Maybe use preliminaryutility more 4 in a row means 4 for winner X of -4 for winner O
+    This can be done otherwise
+    4 in a row means 4 for winner X of -4 for winner O
+    3 if 3 out of 4 in a row for X etcetera
     """
-    dezewinnaar=winner(board)
-    if dezewinnaar==X:
-        return 1
-    elif dezewinnaar==O:
-        return -1
+    '''
+    aantal op rij is maximaal aantal (=nr = 4)
+    dit telt aantal op rij van dezelfde soort
+    tussendoor mogen wel lege plekken zijn
+    maar geen velden van de andere soort
+    elke X > 1 op rij levert 1 punt op --> 2, 3 of 4
+    elke O > 1 op rij levert -1 punt op --> -2, -3 of -4
+    als deze functie 4 = aantal oplevert is X de winnaar
+    en als deze functie -4 = -aantal oplevert is O de winnaar
+
+    '''
+    countX = [0,0,0,0]
+    countO = [0,0,0,0]
+    
+    #countX of countO counts number in a row of one sort
+    #[rows,columns,diagonals upright, diagonals upleft]
+    
+    #rows
+    for i in range(nrows):
+        for j in range(ncolumns - nr):
+            k = 0
+            while board[i][j+k] in [X,EMPTY] and k < nr:
+                if board[i][j+k] ==X:
+                    countX[0] += 1
+                k += 1
+            k = 0
+            while board[i][j+k] in [O,EMPTY] and k < nr:
+                if board[i][j+k] ==O:
+                    countO[0] += 1
+                k += 1
+    #columns
+    for j in range(ncolumns):
+        for i in range(nrows - nr):
+            k = 0
+            while board[i+k][j] in [X,EMPTY] and k < nr:
+                if board[i+k][j] ==X:
+                    countX[1] += 1
+                k += 1
+            k = 0
+            while board[i+k][j] in [O,EMPTY] and k < nr:
+                if board[i+k][j] ==O:
+                    countO[1] += 1
+                k += 1
+    #diagonals upright:
+    for i in range(nrows - nr):
+        for j in range(ncolumns - nr):   
+            k = 0
+            while board[i+k][j+k] in [X,EMPTY] and k < nr:
+                if board[i+k][j+k] ==X:
+                    countX[2] += 1
+                k += 1
+            k = 0
+            while board[i+k][j+k] in [O,EMPTY] and k < nr:
+                if board[i+k][j+k] ==O:
+                    countO[2] += 1
+                k += 1
+    #diagonals upleft
+    for i in range(nrows - nr):
+        for j in range(ncolumns - 1, ncolumns - nr, -1):
+            k = 0
+            while board[i+k][j-k] in [X,EMPTY] and k < nr:
+                if board[i+k][j-k] ==X:
+                    countX[3] += 1
+                k += 1
+            k = 0
+            while board[i+k][j-k] in [O,EMPTY] and k < nr:
+                if board[i+k][j-k] ==O:
+                    countO[3] += 1
+                k += 1
+    maxX = max(countX)
+    maxO = max(countO)
+    if maxX > maxO:
+        return maxX
     else:
-        return 0
-
-"""def preliminaryutility(board,maxaantal):
-    '''
-    returns a preliminary utility if no winner yet
-    3 or 2 for X, -3 or -3 for O
-    called from minimax when depth is reached
-    '''
-    for aantal in range(1,maxaantal):
-        #rows
-        for i in range(nrows):
-            for j in range(ncolumns - nr):
-                if board[i][j] in [X,O] and alln(board,i,j,True,aantal):
-                    return (board[i][j],aantal) if board[i][j]==X else (board[i][j],-aantal)
-        # rows
-        for j in range(ncolumns):
-            for i in range(nrows - nr):
-                if board[i][j] in [X, O] and alln(board, i, j, False, aantal):
-                    return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
-        # diagonals to the right
-
-                if board[i][j] in [X,O] and alld(board, i, j, True, aantal):
-                    return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
-        # diagonals to the left
-
-                if board[i][j] in [X,O] and alld(board, i, j, False, aantal):
-                    return (board[i][j], aantal) if board[i][j] == X else (board[i][j], -aantal)
-        # when no return occurred, no nr in a row
-        return 0
-"""
+        return -maxO
+    
+    
 
 def minimax(board,limit):
     """
@@ -149,9 +192,12 @@ def max_value(board,alpha,beta,limit):
 
     # utilvalue via countn opvragen
     # if abs(value) == nr dan terminal, or limit <0
-    if terminal(board) or limit < 0:
+
+    utilvalue = utility(board)
+
+    if abs(utilvalue) == nr or limit < 0:
         #print("max_value returns ",utility(board))
-        return [w,utility(board)]
+        return [w,utilvalue]
     for action in actions(board):
         temp=min_value(result(board,action),alpha,beta,limit-1)
         
@@ -169,7 +215,9 @@ def min_value(board,alpha,beta,limit):
     w=[None,beta]
     # w[0] is move w[1] is value of utility
 
-    if terminal(board) or limit < 0:
+    utilvalue = utility(board)
+
+    if abs(utilvalue) == nr or limit < 0:
         #print("min_value returns ",utility(board))
         return [w,utility(board)]
 
