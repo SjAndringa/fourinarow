@@ -104,6 +104,7 @@ def utility(board):
     en als deze functie -4 = -aantal oplevert is O de winnaar
 
     '''
+
     countX = [0,0,0,0]
     countO = [0,0,0,0]
     
@@ -114,10 +115,13 @@ def utility(board):
     for i in range(nrows):
         for j in range(ncolumns - nr):
             k = 0
+            #hier ging iets mis: countX[n] blijft doortellen
+            tempcount = 0
             while board[i][j+k] in [X,EMPTY] and k < nr:
                 if board[i][j+k] ==X:
-                    countX[0] += 1
+                    tempcount += 1
                 k += 1
+            countX[0] = max(countX[0],tempcount)
             k = 0
             while board[i][j+k] in [O,EMPTY] and k < nr:
                 if board[i][j+k] ==O:
@@ -198,6 +202,10 @@ def max_value(board,alpha,beta,limit):
     if abs(utilvalue) == nr or limit < 0:
         #print("max_value returns ",utility(board))
         return [w,utilvalue]
+    dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
+    thisutility = utility(dummyboard)
+    print("utility with dummyboard = " , thisutility)
+    assert thisutility == 3
     for action in actions(board):
         temp=min_value(result(board,action),alpha,beta,limit-1)
         
