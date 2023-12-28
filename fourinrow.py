@@ -105,8 +105,8 @@ def utility(board):
 
     '''
 
-    countX = [0,0,0,0]
-    countO = [0,0,0,0]
+    countX = 0
+    countO = 0
     
     #countX of countO counts number in a row of one sort
     #[rows,columns,diagonals upright, diagonals upleft]
@@ -121,57 +121,72 @@ def utility(board):
                 if board[i][j+k] ==X:
                     tempcount += 1
                 k += 1
-            countX[0] = max(countX[0],tempcount)
+            countX = max(countX,tempcount)
             k = 0
+            tempcount = 0
             while board[i][j+k] in [O,EMPTY] and k < nr:
                 if board[i][j+k] ==O:
-                    countO[0] += 1
+                    tempcount += 1
                 k += 1
+            countO = max(countO,tempcount)
     #columns
     for j in range(ncolumns):
         for i in range(nrows - nr):
             k = 0
+            tempcount = 0
             while board[i+k][j] in [X,EMPTY] and k < nr:
                 if board[i+k][j] ==X:
-                    countX[1] += 1
+                    tempcount += 1
                 k += 1
+            countX = max(countX,tempcount)
             k = 0
+            tempcount = 0
             while board[i+k][j] in [O,EMPTY] and k < nr:
                 if board[i+k][j] ==O:
-                    countO[1] += 1
+                    tempcount += 1
                 k += 1
+            countO = max(countO, tempcount)
     #diagonals upright:
     for i in range(nrows - nr):
         for j in range(ncolumns - nr):   
             k = 0
+            tempcount = 0
             while board[i+k][j+k] in [X,EMPTY] and k < nr:
                 if board[i+k][j+k] ==X:
-                    countX[2] += 1
+                    tempcount += 1
                 k += 1
+            countX = max(countX,tempcount)
             k = 0
+            tempcount = 0
             while board[i+k][j+k] in [O,EMPTY] and k < nr:
                 if board[i+k][j+k] ==O:
-                    countO[2] += 1
+                    tempcount += 1
                 k += 1
+            countO = max(countX,tempcount)
     #diagonals upleft
     for i in range(nrows - nr):
         for j in range(ncolumns - 1, ncolumns - nr, -1):
             k = 0
+            tempcount = 0
             while board[i+k][j-k] in [X,EMPTY] and k < nr:
                 if board[i+k][j-k] ==X:
-                    countX[3] += 1
+                    tempcount += 1
                 k += 1
+            countX = max(countX,tempcount)
             k = 0
+            tempcount = 0
             while board[i+k][j-k] in [O,EMPTY] and k < nr:
                 if board[i+k][j-k] ==O:
-                    countO[3] += 1
+                    tempcount += 1
                 k += 1
-    maxX = max(countX)
-    maxO = max(countO)
-    if maxX > maxO:
-        return maxX
+            countO = max(countX,tempcount)
+    
+    if countX == countO:
+        return 0
+    if countX > countO:
+        return countX
     else:
-        return -maxO
+        return countO
     
     
 
