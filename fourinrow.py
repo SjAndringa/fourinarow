@@ -162,7 +162,7 @@ def utility(board):
                 if board[i+k][j+k] ==O:
                     tempcount += 1
                 k += 1
-            countO = max(countX,tempcount)
+            countO = max(countO,tempcount)
     #diagonals upleft
     for i in range(nrows - nr):
         for j in range(ncolumns - 1, ncolumns - nr, -1):
@@ -179,7 +179,7 @@ def utility(board):
                 if board[i+k][j-k] ==O:
                     tempcount += 1
                 k += 1
-            countO = max(countX,tempcount)
+            countO = max(countO,tempcount)
     
     if countX == countO:
         return 0
@@ -217,13 +217,16 @@ def max_value(board,alpha,beta,limit):
     if abs(utilvalue) == nr or limit < 0:
         #print("max_value returns ",utility(board))
         return [w,utilvalue]
-    dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
-    thisutility = utility(dummyboard)
-    print("utility with dummyboard = " , thisutility)
-    assert thisutility == 3
+    #dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
+    #thisutility = utility(dummyboard)
+    #print("utility with dummyboard = " , thisutility)
+    #assert thisutility == 3
     for action in actions(board):
         temp=min_value(result(board,action),alpha,beta,limit-1)
-        
+        #attempt to win directly
+        if winner(result(board,action)) == X:
+            return([result(board,action), utility(result(board,action))])
+
         if temp[1]>alpha:
             alpha=temp[1]
             w=[action,temp[1]]
@@ -246,6 +249,10 @@ def min_value(board,alpha,beta,limit):
 
     for action in actions(board):
         temp=max_value(result(board,action),alpha,beta,limit-1)
+        #attempt to win directly
+        if winner(result(board,action)) == O:
+            return([result(board,action), utility(result(board,action))])
+
         if temp[1]<beta:
             beta=temp[1]
             w=[action,temp[1]]
