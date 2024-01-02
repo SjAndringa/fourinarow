@@ -10,7 +10,7 @@ EMPTY = None
 nrows = 6
 ncolumns = 7
 nr = 4
-dl = 6
+dl = 5
 
 def initial_state():
     """
@@ -66,7 +66,7 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
+    #dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
     #assert alln(dummyboard,nr) == X
     #return alln(dummyboard,nr)
     return alln(board,nr)
@@ -215,15 +215,16 @@ def max_value(board,alpha,beta,limit):
     utilvalue = utility(board)    
     # als er een winnaar is dan terug
     if abs(utilvalue) == nr:
-        #print("max_value returns ",utility(board))
+        #now X or O has won
         return [w,utilvalue]
 
     #attempt to win directly
     for action in actions(board):
         tempresult = result(board,action)
         temputility = utility(tempresult)
-        if winner(tempresult) == X:
+        if temputility == nr:
             return([action, temputility])
+        
     #als je door je limiet heen bent terug
     if limit < 0:
         return [w,utilvalue]
@@ -250,19 +251,19 @@ def min_value(board,alpha,beta,limit):
 
     utilvalue = utility(board)
     if abs(utilvalue) == nr:
-        #print("min_value returns ",utility(board))
+        # now X or O has won
         return [w,utility(board)]
     
     #attempt to win directly
     for action in actions(board):
         tempresult = result(board,action)
         temputility = utility(tempresult)
-        if winner(tempresult) == O:
+        if temputility == -nr:
             return([action, temputility])
         
     if limit < 0:
         #print("min_value returns ",utility(board))
-        return [w,utility(board)]
+        return [w,utilvalue]
 
 
     for action in actions(board):
