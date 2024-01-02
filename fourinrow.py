@@ -10,7 +10,7 @@ EMPTY = None
 nrows = 6
 ncolumns = 7
 nr = 4
-dl = 24
+dl = 6
 
 def initial_state():
     """
@@ -190,7 +190,7 @@ def utility(board):
     
     
 
-def minimax(board,limit):
+def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
@@ -198,9 +198,9 @@ def minimax(board,limit):
     if terminal(board):
         return
     if player(board)==X:
-        w=max_value(board,-math.inf,math.inf,limit)
+        w=max_value(board,-math.inf,math.inf,dl)
     else:
-        w=min_value(board,-math.inf,math.inf,limit)
+        w=min_value(board,-math.inf,math.inf,dl)
     return w[0]
         
 def max_value(board,alpha,beta,limit):
@@ -212,21 +212,28 @@ def max_value(board,alpha,beta,limit):
     # utilvalue via countn opvragen
     # if abs(value) == nr dan terminal, or limit <0
 
-    utilvalue = utility(board)
-
-    if abs(utilvalue) == nr or limit < 0:
+    utilvalue = utility(board)    
+    # als er een winnaar is dan terug
+    if abs(utilvalue) == nr:
         #print("max_value returns ",utility(board))
+        return [w,utilvalue]
+
+    #attempt to win directly
+    for action in actions(board):
+        tempresult = result(board,action)
+        temputility = utility(tempresult)
+        if winner(tempresult) == X:
+            return([action, temputility])
+    #als je door je limiet heen bent terug
+    if limit < 0:
         return [w,utilvalue]
     #dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
     #thisutility = utility(dummyboard)
     #print("utility with dummyboard = " , thisutility)
     #assert thisutility == 3
+    
     for action in actions(board):
         temp=min_value(result(board,action),alpha,beta,limit-1)
-        #attempt to win directly
-        if winner(result(board,action)) == X:
-            return([result(board,action), utility(result(board,action))])
-
         if temp[1]>alpha:
             alpha=temp[1]
             w=[action,temp[1]]
@@ -242,17 +249,24 @@ def min_value(board,alpha,beta,limit):
     # w[0] is move w[1] is value of utility
 
     utilvalue = utility(board)
-
-    if abs(utilvalue) == nr or limit < 0:
+    if abs(utilvalue) == nr:
+        #print("min_value returns ",utility(board))
+        return [w,utility(board)]
+    
+    #attempt to win directly
+    for action in actions(board):
+        tempresult = result(board,action)
+        temputility = utility(tempresult)
+        if winner(tempresult) == O:
+            return([action, temputility])
+        
+    if limit < 0:
         #print("min_value returns ",utility(board))
         return [w,utility(board)]
 
+
     for action in actions(board):
         temp=max_value(result(board,action),alpha,beta,limit-1)
-        #attempt to win directly
-        if winner(result(board,action)) == O:
-            return([result(board,action), utility(result(board,action))])
-
         if temp[1]<beta:
             beta=temp[1]
             w=[action,temp[1]]

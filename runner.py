@@ -8,6 +8,7 @@ nrows = ttt.nrows
 ncolumns = ttt.ncolumns
 nr = ttt.nr
 
+
 pygame.init()
 size = width, height = 800, 600
 
@@ -116,7 +117,7 @@ while True:
         if user != player and not game_over:
             if ai_turn:
                 time.sleep(0.5)
-                move = ttt.minimax(board,nr)
+                move = ttt.minimax(board)
                 board = ttt.result(board, move)
                 ai_turn = False
             else:
