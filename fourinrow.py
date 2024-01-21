@@ -10,7 +10,7 @@ EMPTY = None
 nrows = 6
 ncolumns = 7
 nr = 4
-dl = 5
+dl = 6
 
 def initial_state():
     """
@@ -46,8 +46,7 @@ def actions(board):
             if i == 0:
                 if board[i][j] == EMPTY:
                     possible.add((i,j))
-            else:
-                if (board[i][j] == EMPTY) and board[i-1][j] is not EMPTY:
+            elif (board[i][j] == EMPTY) and board[i-1][j] is not EMPTY:
                     possible.add((i,j))
     return possible
 
@@ -186,9 +185,7 @@ def utility(board):
     if countX > countO:
         return countX
     else:
-        return countO
-    
-    
+        return -countO   
 
 def minimax(board):
     """
@@ -213,20 +210,20 @@ def max_value(board,alpha,beta,limit):
     # if abs(value) == nr dan terminal, or limit <0
 
     utilvalue = utility(board)    
-    # als er een winnaar is dan terug
+    # als er al een winnaar is dan terug, w[0] blijft None
     if abs(utilvalue) == nr:
         #now X or O has won
         return [w,utilvalue]
-
-    #attempt to win directly
-    for action in actions(board):
-        tempresult = result(board,action)
-        temputility = utility(tempresult)
-        if temputility == nr:
-            return([action, temputility])
         
-    #als je door je limiet heen bent terug
+    #als je door je limiet heen bent nog een poging of terug
     if limit < 0:
+            #last attempt to win directly
+        for action in actions(board):
+            tempresult = result(board,action)
+            temputility = utility(tempresult)
+            if temputility == nr:
+                return [action, temputility]
+        # if no winner directly, just return with w[0] = None
         return [w,utilvalue]
     #dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
     #thisutility = utility(dummyboard)
@@ -251,18 +248,18 @@ def min_value(board,alpha,beta,limit):
 
     utilvalue = utility(board)
     if abs(utilvalue) == nr:
-        # now X or O has won
+        # now X or O has won, return, w[0] is nog steeds None
         return [w,utility(board)]
-    
-    #attempt to win directly
-    for action in actions(board):
-        tempresult = result(board,action)
-        temputility = utility(tempresult)
-        if temputility == -nr:
-            return([action, temputility])
-        
+       
     if limit < 0:
         #print("min_value returns ",utility(board))
+        #last attempt to win directly
+        for action in actions(board):
+            tempresult = result(board,action)
+            temputility = utility(tempresult)
+            if temputility == -nr:
+                return [action, temputility]
+        # if that didn't work return with w[0] = None
         return [w,utilvalue]
 
 
