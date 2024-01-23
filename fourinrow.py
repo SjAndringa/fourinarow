@@ -211,26 +211,24 @@ def max_value(board,alpha,beta,limit):
 
     utilvalue = utility(board)    
     # als er al een winnaar is dan terug, w[0] blijft None
-    if abs(utilvalue) == nr:
-        #now X or O has won
+    if abs(utilvalue) == nr or limit < 0:
+        #now X or O has won, or limit reached
         return [w,utilvalue]
         
-    #als je door je limiet heen bent nog een poging of terug
-    if limit < 0:
-            #last attempt to win directly
-        for action in actions(board):
-            tempresult = result(board,action)
-            temputility = utility(tempresult)
-            if temputility == nr:
-                return [action, temputility]
-        # if no winner directly, just return with w[0] = None
-        return [w,utilvalue]
     #dummyboard=[[O, X, X, X, O, X, None], [None, X, O, X, X, O, None], [None, O, X, X, X, O, None], [None, O, O, O, X, X, None], [None, None, None, None, O, None, None], [None, None, None, None, None, None, None]]
     #thisutility = utility(dummyboard)
     #print("utility with dummyboard = " , thisutility)
     #assert thisutility == 3
     
     for action in actions(board):
+        #see if this is a winning move for X
+        tempresult = result(board,action)
+        temputility = utility(tempresult)
+        if temputility == nr:
+            return [action, temputility]
+
+        # if not a winning move, try further using minimax
+        # here, figure out what min_value would do
         temp=min_value(result(board,action),alpha,beta,limit-1)
         if temp[1]>alpha:
             alpha=temp[1]
@@ -247,23 +245,20 @@ def min_value(board,alpha,beta,limit):
     # w[0] is move w[1] is value of utility
 
     utilvalue = utility(board)
-    if abs(utilvalue) == nr:
-        # now X or O has won, return, w[0] is nog steeds None
+    if abs(utilvalue) == nr or limit < 0:
+        # now X or O has won, or limit reached, return, w[0] is nog steeds None
         return [w,utility(board)]
        
-    if limit < 0:
-        #print("min_value returns ",utility(board))
-        #last attempt to win directly
-        for action in actions(board):
-            tempresult = result(board,action)
-            temputility = utility(tempresult)
-            if temputility == -nr:
-                return [action, temputility]
-        # if that didn't work return with w[0] = None
-        return [w,utilvalue]
-
 
     for action in actions(board):
+        #see if this is a winning move for O
+        tempresult = result(board,action)
+        temputility = utility(tempresult)
+        if temputility == -nr:
+            return [action, temputility]
+        
+        # if not a winning move, try further using minimax
+        # here, figure out what max_value would do        
         temp=max_value(result(board,action),alpha,beta,limit-1)
         if temp[1]<beta:
             beta=temp[1]
