@@ -116,17 +116,35 @@ def utility(board):
             k = 0
             #hier ging iets mis: countX[n] blijft doortellen
             tempcount = 0
+            isadjacent = False
             while board[i][j+k] in [X,EMPTY] and k < nr:
                 if board[i][j+k] ==X:
+                    isadjacent = True
                     tempcount += 1
+                elif k > 0:
+                    isadjacent = False
                 k += 1
+            # give a reward if you have two empty positions left and right in case of adjacent X's
+            if tempcount == nr - 1:
+                if j > 0 and j + nr < ncolumns and isadjacent:
+                    #give reward if on the sides empty cells
+                    if board[i][j-1] == board[i][j+nr] == EMPTY:
+                        tempcount += 1
             countX = max(countX,tempcount)
             k = 0
             tempcount = 0
+            isadjacent = False
             while board[i][j+k] in [O,EMPTY] and k < nr:
                 if board[i][j+k] ==O:
                     tempcount += 1
                 k += 1
+            # give a reward if you have two empty positions left and right in case of adjacent O's
+                #make it a function, same as with X-s
+            if tempcount == nr - 1:
+                if j > 0 and j + nr < ncolumns and isadjacent:
+                    #give reward if on the sides empty cells
+                    if board[i][j-1] == board[i][j+nr] == EMPTY:
+                        tempcount += 1
             countO = max(countO,tempcount)
     #columns
     for j in range(ncolumns):
