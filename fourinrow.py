@@ -125,17 +125,8 @@ def utility(board):
                 elif board[i][j+k] == O:
                     tempO += 1
 
-            if tempX > 0 and tempO > 0:
-                # there are X's and O's, so count for O and X are to be zero
-                tempO = 0
-                tempX = 0
-            elif tempX > 0:
-                # there are X's, so count for X is going to zero
-                tempO = 0
-            elif tempO > 0:
-                tempX = 0
-            countX = max(countX,tempX)
-            countO = max(countO,tempO)
+            countX = max(countX,tempXO(tempX,tempO)[0])
+            countO = max(countO,tempXO(tempX,tempO)[1])
             
     #columns
     for j in range(ncolumns):
@@ -147,17 +138,8 @@ def utility(board):
                     tempX += 1
                 elif board[i+k][j] == O:
                     tempO += 1
-            if tempX > 0 and tempO > 0:
-                # there are X's and O's, so count for O and X are to be zero
-                tempO = 0
-                tempX = 0
-            elif tempX > 0:
-                # there are X's, so count for X is going to zero
-                tempO = 0
-            elif tempO > 0:
-                tempX = 0
-            countX = max(countX,tempX)
-            countO = max(countO,tempO)
+            countX = max(countX,tempXO(tempX,tempO)[0])
+            countO = max(countO,tempXO(tempX,tempO)[1])
 
     #diagonals upright:
     for i in range(nrows - nr + 1):
@@ -169,17 +151,9 @@ def utility(board):
                     tempX += 1
                 elif board[i+k][j+k] == O:
                     tempO += 1
-            if tempX > 0 and tempO > 0:
-                # there are X's and O's, so count for O and X are to be zero
-                tempO = 0
-                tempX = 0
-            elif tempX > 0:
-                # there are X's, so count for X is going to zero
-                tempO = 0
-            elif tempO > 0:
-                tempX = 0
-            countX = max(countX,tempX)
-            countO = max(countO,tempO)
+
+            countX = max(countX,tempXO(tempX,tempO)[0])
+            countO = max(countO,tempXO(tempX,tempO)[1])
         
     #diagonals upleft
     for i in range(nrows - nr + 1):
@@ -192,17 +166,8 @@ def utility(board):
                 elif board[i+k][j-k] == X:
                     tempX += 1
 
-            if tempX > 0 and tempO > 0:
-                # there are X's and O's, so count for O and X are to be zero
-                tempO = 0
-                tempX = 0
-            elif tempX > 0:
-                # there are X's, so count for X is going to zero
-                tempO = 0
-            elif tempO > 0:
-                tempX = 0
-            countX = max(countX,tempX)
-            countO = max(countO,tempO)
+            countX = max(countX,tempXO(tempX,tempO)[0])
+            countO = max(countO,tempXO(tempX,tempO)[1])
             
     
     if countX == countO:
@@ -210,7 +175,19 @@ def utility(board):
     elif countX > countO:
         return countX
     else:
-        return -countO   
+        return -countO 
+
+def tempXO(tempX,tempO):
+    if tempX > 0 and tempO > 0:
+        # there are X's and O's, so count for O and X are to be zero
+        tempO = 0
+        tempX = 0
+    elif tempX > 0:
+        # there are X's, so count for X is going to zero
+        tempO = 0
+    elif tempO > 0:
+        tempX = 0
+    return [tempX, tempO]
 
 def minimax(board):
     """
