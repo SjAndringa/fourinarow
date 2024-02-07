@@ -106,101 +106,108 @@ def utility(board):
 
     countX = 0
     countO = 0
-    
+    #board = [[EMPTY,O,O,X,X,X,EMPTY],[EMPTY,EMPTY,O,EMPTY,EMPTY,EMPTY,EMPTY],[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]]
+    # previous line only for debugging purpose
     #countX of countO counts number in a row of one sort
     #[rows,columns,diagonals upright, diagonals upleft]
     
     #rows
     for i in range(nrows):
-        for j in range(ncolumns - nr):
-            k = 0
-            #hier ging iets mis: countX[n] blijft doortellen
-            tempcount = 0
-            isadjacent = False
-            while board[i][j+k] in [X,EMPTY] and k < nr:
-                if board[i][j+k] ==X:
-                    isadjacent = True
-                    tempcount += 1
-                elif k > 0:
-                    isadjacent = False
-                k += 1
-            # give a reward if you have two empty positions left and right in case of adjacent X's
-            if tempcount == nr - 1:
-                if j > 0 and j + nr < ncolumns and isadjacent:
-                    #give reward if on the sides empty cells
-                    if board[i][j-1] == board[i][j+nr] == EMPTY:
-                        tempcount += 1
-            countX = max(countX,tempcount)
-            k = 0
-            tempcount = 0
-            isadjacent = False
-            while board[i][j+k] in [O,EMPTY] and k < nr:
-                if board[i][j+k] ==O:
-                    tempcount += 1
-                k += 1
-            # give a reward if you have two empty positions left and right in case of adjacent O's
-                #make it a function, same as with X-s
-            if tempcount == nr - 1:
-                if j > 0 and j + nr < ncolumns and isadjacent:
-                    #give reward if on the sides empty cells
-                    if board[i][j-1] == board[i][j+nr] == EMPTY:
-                        tempcount += 1
-            countO = max(countO,tempcount)
+        
+        for j in range(ncolumns - nr + 1):
+            # actual counting of X and O in these nr cells
+            tempX = 0
+            tempO = 0
+            for k in range(nr):
+
+                if board[i][j+k] == X:
+                    tempX += 1
+                elif board[i][j+k] == O:
+                    tempO += 1
+
+            if tempX > 0 and tempO > 0:
+                # there are X's and O's, so count for O and X are to be zero
+                tempO = 0
+                tempX = 0
+            elif tempX > 0:
+                # there are X's, so count for X is going to zero
+                tempO = 0
+            elif tempO > 0:
+                tempX = 0
+            countX = max(countX,tempX)
+            countO = max(countO,tempO)
+            
     #columns
     for j in range(ncolumns):
-        for i in range(nrows - nr):
-            k = 0
-            tempcount = 0
-            while board[i+k][j] in [X,EMPTY] and k < nr:
-                if board[i+k][j] ==X:
-                    tempcount += 1
-                k += 1
-            countX = max(countX,tempcount)
-            k = 0
-            tempcount = 0
-            while board[i+k][j] in [O,EMPTY] and k < nr:
-                if board[i+k][j] ==O:
-                    tempcount += 1
-                k += 1
-            countO = max(countO, tempcount)
+        for i in range(nrows - nr + 1):
+            tempX = 0
+            tempO = 0
+            for k in range(nr):
+                if board[i+k][j] == X:
+                    tempX += 1
+                elif board[i+k][j] == O:
+                    tempO += 1
+            if tempX > 0 and tempO > 0:
+                # there are X's and O's, so count for O and X are to be zero
+                tempO = 0
+                tempX = 0
+            elif tempX > 0:
+                # there are X's, so count for X is going to zero
+                tempO = 0
+            elif tempO > 0:
+                tempX = 0
+            countX = max(countX,tempX)
+            countO = max(countO,tempO)
+
     #diagonals upright:
-    for i in range(nrows - nr):
-        for j in range(ncolumns - nr):   
-            k = 0
-            tempcount = 0
-            while board[i+k][j+k] in [X,EMPTY] and k < nr:
-                if board[i+k][j+k] ==X:
-                    tempcount += 1
-                k += 1
-            countX = max(countX,tempcount)
-            k = 0
-            tempcount = 0
-            while board[i+k][j+k] in [O,EMPTY] and k < nr:
-                if board[i+k][j+k] ==O:
-                    tempcount += 1
-                k += 1
-            countO = max(countO,tempcount)
+    for i in range(nrows - nr + 1):
+        for j in range(ncolumns - nr + 1):   
+            tempX = 0
+            tempO = 0
+            for k in range(nr):
+                if board[i+k][j+k] == X:
+                    tempX += 1
+                elif board[i+k][j+k] == O:
+                    tempO += 1
+            if tempX > 0 and tempO > 0:
+                # there are X's and O's, so count for O and X are to be zero
+                tempO = 0
+                tempX = 0
+            elif tempX > 0:
+                # there are X's, so count for X is going to zero
+                tempO = 0
+            elif tempO > 0:
+                tempX = 0
+            countX = max(countX,tempX)
+            countO = max(countO,tempO)
+        
     #diagonals upleft
-    for i in range(nrows - nr):
-        for j in range(ncolumns - 1, ncolumns - nr, -1):
-            k = 0
-            tempcount = 0
-            while board[i+k][j-k] in [X,EMPTY] and k < nr:
-                if board[i+k][j-k] ==X:
-                    tempcount += 1
-                k += 1
-            countX = max(countX,tempcount)
-            k = 0
-            tempcount = 0
-            while board[i+k][j-k] in [O,EMPTY] and k < nr:
-                if board[i+k][j-k] ==O:
-                    tempcount += 1
-                k += 1
-            countO = max(countO,tempcount)
+    for i in range(nrows - nr + 1):
+        for j in range(ncolumns - 1, ncolumns - nr - 1, -1):
+            tempX = 0
+            tempO = 0
+            for k in range(nr):
+                if board[i+k][j-k] == X:
+                    tempX += 1
+                elif board[i+k][j-k] == X:
+                    tempX += 1
+
+            if tempX > 0 and tempO > 0:
+                # there are X's and O's, so count for O and X are to be zero
+                tempO = 0
+                tempX = 0
+            elif tempX > 0:
+                # there are X's, so count for X is going to zero
+                tempO = 0
+            elif tempO > 0:
+                tempX = 0
+            countX = max(countX,tempX)
+            countO = max(countO,tempO)
+            
     
     if countX == countO:
         return 0
-    if countX > countO:
+    elif countX > countO:
         return countX
     else:
         return -countO   
