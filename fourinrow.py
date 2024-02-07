@@ -183,7 +183,7 @@ def tempXO(tempX,tempO):
         tempO = 0
         tempX = 0
     elif tempX > 0:
-        # there are X's, so count for X is going to zero
+        # there are X's, so count for O is going to zero
         tempO = 0
     elif tempO > 0:
         tempX = 0
