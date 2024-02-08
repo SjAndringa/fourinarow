@@ -178,16 +178,16 @@ def utility(board):
         return -countO 
 
 def tempXO(tempX,tempO):
-    if tempX > 0 and tempO > 0:
-        # there are X's and O's, so count for O and X are to be zero
-        tempO = 0
-        tempX = 0
-    elif tempX > 0:
+    tX = tempX
+    tO = tempO
+    # tX and tO will be returned. 
+    #Need extra variable to avoid tempO being made zero before assessing if there are O's
+    if tempX > 0:
         # there are X's, so count for O is going to zero
-        tempO = 0
-    elif tempO > 0:
-        tempX = 0
-    return [tempX, tempO]
+        tO = 0
+    if tempO > 0:
+        tX = 0
+    return [tX, tO]
 
 def minimax(board):
     """
