@@ -222,8 +222,10 @@ def max_value(board,alpha,beta,limit):
     #print("utility with dummyboard = " , thisutility)
     #assert thisutility == 3
     
-    for action in actions(board):
+    theseactions = actions(board)
+    for a in range(len(theseactions)):
         #see if this is a winning move for X
+        action = theseactions.pop()
         tempresult = result(board,action)
         temputility = utility(tempresult)
         if temputility == nr:
@@ -252,7 +254,9 @@ def min_value(board,alpha,beta,limit):
         return [w,utility(board)]
        
 
-    for action in actions(board):
+    theseactions = actions(board)
+    for a in range(len(theseactions)):
+        action = theseactions.pop()
         #see if this is a winning move for O
         tempresult = result(board,action)
         temputility = utility(tempresult)
