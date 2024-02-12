@@ -3,6 +3,7 @@ Game Player
 """
 
 import math
+import random
 
 X = "X"
 O = "O"
@@ -225,7 +226,8 @@ def max_value(board,alpha,beta,limit):
     theseactions = actions(board)
     for a in range(len(theseactions)):
         #see if this is a winning move for X
-        action = theseactions.pop()
+        action = random.choice(tuple(theseactions))
+        theseactions.remove(action)
         tempresult = result(board,action)
         temputility = utility(tempresult)
         if temputility == nr:
@@ -256,7 +258,8 @@ def min_value(board,alpha,beta,limit):
 
     theseactions = actions(board)
     for a in range(len(theseactions)):
-        action = theseactions.pop()
+        action = random.choice(tuple(theseactions))
+        theseactions.remove(action)
         #see if this is a winning move for O
         tempresult = result(board,action)
         temputility = utility(tempresult)
